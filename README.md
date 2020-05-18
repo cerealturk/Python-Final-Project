@@ -6,4 +6,4 @@ Students: Isaac Burmingham and Janek Turk<br>
 Quarter: Spring 2020<br>
 <br>
 Description:<br>
-This is our badass project for Python Software Development.
+Project for Python Software Development.
