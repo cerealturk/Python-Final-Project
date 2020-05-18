@@ -1,8 +1,8 @@
 """
 main.py
 
-Contributor: Janek Turk
-Editor: Isaac Burmingham
+Contributor: Isaac Burmingham
+Editor: Janek Turk
 
 
 """
