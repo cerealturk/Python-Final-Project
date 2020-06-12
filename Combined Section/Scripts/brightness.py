@@ -2,12 +2,15 @@ import json
 import os
 import numpy as py
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 import math
 
 def part(data):
 	i = 0
 	types = {}
 	ptypes = []
+	distance = 0.043 * 1e6
+	log_distance = math.log( (distance/10)**2)
 	
 	for point in data:
 		ptype = point[4]
@@ -21,7 +24,11 @@ def part(data):
 			ptypes.append(ptype)
 			i += 1
 
-		types[ptype]["values"].append(float(point[1]))
+		value = float(point[1])
+		absolute = value - 2.5 * log_distance 
+		absolute = absolute / 3
+
+		types[ptype]["values"].append(absolute)
 		types[ptype]["timestamp"].append(float(point[0]))
 	
 	return (types, ptypes)
@@ -44,24 +51,25 @@ def plot(types, ptypes):
 	ylower = min(values_0)
 	yupper = max(values_0)
 
-	plt.axis([xlower-100, xupper+100, yupper+1, ylower-1])
+	x = py.linspace(xlower-100, xupper+100, 1000)
+	y = py.linspace(-4.5, -4.5, 1000)
+	y2 = py.linspace(-10, -10, 1000)
+	plt.axis([xlower-100, xupper+100, -3, ylower-1])
 
 	ax = plt.gca()
-	ax.set_title("Photometry for SN1987A")
-	ax.set_ylabel("Apparent Magnitude")
+	ax.set_title("Magnitude of SN1987A to Fireball Brightness Range")
+	ax.set_ylabel("Absolute Magnitude")
 	ax.set_xlabel("Time (Gregorian)")
 
-	plt.plot(timestamp_0, values_0, 'r.', 
-		timestamp_1, values_1, 'b.', 
-		timestamp_2, values_2, 'g.', 
-		timestamp_3, values_3, 'y.', 
-		timestamp_4, values_4, 'm.', markersize=1)
+	plt.plot(timestamp_0, values_0, 'r.', markersize=1)
+
+	plt.plot(x, y, 'bo', markersize=1)
+	plt.plot(x, y2, 'bo', markersize=1)
+	plt.fill_between(x, y, y2, alpha = 0.5)
+
+	red_patch = mpatches.Patch(color='red', label="supernova")
+	blue_patch = mpatches.Patch(color='blue', label="fireball range")
+	plt.legend(handles=[red_patch, blue_patch])
 
 
-	red_patch = mpatches.Patch(color='red', label='Visual')
-	blue_patch = mpatches.Patch(color='blue', label='Gamma')
-	green_patch = mpatches.Patch(color='green', label='UV')
-	yellow_patch = mpatches.Patch(color='yellow', label='Infrared')
-	mag_patch = mpatches.Patch(color='magenta', label='Radio')
-	plt.legend(handles=[red_patch, blue_patch,green_patch,yellow_patch,mag_patch])
 	plt.show()

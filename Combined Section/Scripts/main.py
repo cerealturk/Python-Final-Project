@@ -3,9 +3,8 @@ import os
 import numpy as py
 import matplotlib.pyplot as plt
 
-import spectra
-import photometry
-import xray
+import velocity
+import brightness
 
 import argparse
 import logging
@@ -24,46 +23,36 @@ class Data:
 		self.master = json.load(fopen)
 		fopen.close()
 
-	def spectra(self):
-		logging.info("Creating plot for spectral data")
-		data = self.body[self.name]["spectra"]
-		values = spectra.part(data)
-		spectra.plot(values)
+	def velocity(self):
+		logging.info("Creating plot velocity data")		
+		data, bodies = velocity.pull(self.master)
+		values = velocity.read()
+		velocity.plot(data, bodies, values)
 
-	def photometry(self):
-		logging.info("Creating plot for photometry data")
+	def brightness(self):
+		logging.info("Creating plot for brightness data")
 		data = self.body[self.name]["photometry"]
-		types, ptypes = photometry.part(data)
-		photometry.plot(types, ptypes)
-
-	def xray(self):
-		logging.info("Creating plot for xray data")
-		data = self.body[self.name]["xray"]
-		dt, flux = xray.part(data)
-		xray.plot(dt, flux)
+		types, ptypes = brightness.part(data)
+		brightness.plot(types, ptypes)
 
 class Processor:
 	def __init__(self, data):
 		logging.info("Processor object created")
 		self.data = data
 
-	def printSpectra(self):
-		self.data.spectra()
+	def printVelocity(self):
+		self.data.velocity()
 
-	def printPhotometry(self):
-		self.data.photometry()
-
-	def printXray(self):
-		self.data.xray()
+	def printBrightness(self):
+		self.data.brightness()
 
 
 def arg_parser():
 	logging.info("Building argument parser")
 	parser = argparse.ArgumentParser(description="Plot data on supernova")
-	parser.add_argument('-p', '-photometry', dest='photo', action='store_true', default=False, help="plot photometry data")
-	parser.add_argument('-s', '-spectra', dest='spec', action='store_true', default=False, help="plot spectral data")
-	parser.add_argument('-x', '-xray', dest='ray', action='store_true', default=False, help="plot xray data")
-	
+	parser.add_argument('-v', '-velocity', dest='vel', action='store_true', default=False, help="plot velocity scatter plot")
+	parser.add_argument('-b', '-brightness', dest='bright', action='store_true', default=False, help="plot brightness comparison plot")
+
 	logging.info("Parsing arguments")
 	args = parser.parse_args()
 	return args
@@ -89,17 +78,13 @@ def main():
 
 	logging.info("Reading selection...")
 
-	if args.spec:
-		logging.info("initiating Spectral plot...")
-		process.printSpectra()
-
-	if args.photo:
-		logging.info("initiating Photometry plot...")
-		process.printPhotometry()
-
-	if args.ray:
+	if args.vel:
 		logging.info("initiating X-Ray plot...")
-		process.printXray()
+		process.printVelocity()
+
+	if args.bright:
+		logging.info("initiating X-Ray plot...")
+		process.printBrightness()
 
 
 if __name__ == '__main__':
