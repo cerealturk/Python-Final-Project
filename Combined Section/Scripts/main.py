@@ -45,10 +45,11 @@ class Data:
 		data, bodies = altitude.pull_alt(self.master)
 		bins = py.arange(py.amin(data)-0.5, py.amax(data)+0.5)
 		fb = altitude.fb_alt()
-		plt.hist(data, alpha=0.5)
+		plt.hist(data, alpha=0.5,label='Supernovae')
 		plt.title("Altitude Distribution of Fireball and Supernovae")
 		plt.xlabel("Altitude")
 		plt.ylabel("Count")
+		plt.legend(loc='upper right')
 		plt.show()
 
 class Processor:
