@@ -24,7 +24,7 @@ class Fireball:
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
 
-    fh = logging.FileHandler('autompg3.log','w')
+    fh = logging.FileHandler('fireball.log','w')
     fh.setLevel(logging.DEBUG)
     logger.addHandler(fh)
 
@@ -61,7 +61,6 @@ class Fireball:
             reader = csv.reader(infile, delimiter=',', skipinitialspace=True)
             data = [data for data in reader]
         data_array = np.asarray(data)
-        print(data_array[1:])
 
     def write_data(self,file):
         self.fireballdf.to_csv(file)
@@ -93,10 +92,11 @@ class Fireball:
             df_adj = df_adj.copy()
             df_adj['mass'] = df_adj['mass'].astype('float64',copy=False)
             df_adj['Total Radiated Energy (J)'] = df_adj['Total Radiated Energy (J)'].astype('float64',copy=False)
-            sns.lmplot(x='mass',y='Total Radiated Energy (J)',data=df_adj,truncate=True)
+            sns_plot = sns.lmplot(x='mass',y='Total Radiated Energy (J)',data=df_adj,truncate=True)
             plt.xlabel("Mass (kg)")
             plt.ylabel("Radiated Energy (J)")
             plt.show()
+            #sns_plot.savefig("mass.png")
         except AssertionError:
             logging.debug("assertion failed, data invalid")
 
@@ -118,14 +118,14 @@ class Fireball:
             else:
                 lat.append(float(i[:-1]))
 
-        df['Lat'] = lat
+        df['Latitude'] = lat
 
         for i in df['Longitude (deg.)']:
             if i[-1] == 'W':
                 long.append(-float(i[:-1]))
             else:
                 long.append(float(i[:-1]))
-        df['Long'] = long
+        df['Longitude'] = long
 
         df['ln_ImpactEnergy'] = np.log(df['Calculated Total Impact Energy (kt)'])
 
@@ -135,7 +135,7 @@ class Fireball:
 
         world.plot(ax=ax,color='white',edgecolor='black',legend=False)
 
-        plot = df.plot.scatter(x='Long',y='Lat',label="Impact Energy (kt)",
+        plot = df.plot.scatter(x='Longitude',y='Latitude',label="Impact Energy (kt)",
         c=df['ln_ImpactEnergy'],s=20*df['Calculated Total Impact Energy (kt)'],cmap=plt.get_cmap("viridis"),
         alpha=0.7,colorbar=False,ax=ax,legend=True)
         plot.legend(loc=1, prop={'size': 8},markerscale=1/20)
@@ -149,15 +149,19 @@ class Fireball:
 
         plt.show()
 
+        fig.savefig("world_map.png")
+
     def plot_velocity(self):
         # Is there a relationship between impact energy and velocity?
         df = self.fireballdf
         df['velocity'] = df['Velocity (km/s)']
         df_adj = df[np.abs(df.velocity-df.velocity.mean()) <= (1.5*df.velocity.std())]
-        sns.lmplot(x='velocity',y='Calculated Total Impact Energy (kt)',data=df_adj)
+        sns_plot = sns.lmplot(x='velocity',y='Calculated Total Impact Energy (kt)',data=df_adj)
+        #plt.ylim(0,10)
         plt.xlabel("Total Impact Energy (kt)")
         plt.ylabel("Velocity (km/s)")
         plt.show()
+        #sns_plot.savefig("velocityIE2.png")
 
 
 
@@ -167,7 +171,8 @@ def main():
     parser.add_argument("-he",'--header',action='store_true',
     help='get the first 5 rows of the DataFrame')
     parser.add_argument("-o","--ofile",metavar='<outfile>', help='file to write to, default is standard output')
-    parser.add_argument("-p","--plot",help="Plot the output with by either the map, velocity or mass",choices=['map','velocity','mass'])
+    parser.add_argument("-p","--plot",
+    help="Plot the output with by either the map, velocity or mass",choices=['map','velocity','mass'])
     args = parser.parse_args()
 
     myData = Fireball()
@@ -196,6 +201,7 @@ def main():
                 else:
                     logging.debug("No input specified")
 
+
                 myData.write_data(args.ofile)
 
 
@@ -207,15 +213,15 @@ def main():
 
             if args.plot == 'map':
                 myData.plot_map()
-                logging.info('Finished')
+                logging.info('Map created')
 
             elif args.plot == 'velocity':
                 myData.plot_velocity()
-                logging.info('Finished')
+                logging.info('velocity created')
 
             elif args.plot == 'mass':
                 myData.plot_mass()
-                logging.info('Finished')
+                logging.info('mass created')
 
             else:
                 logging.debug("No input specified")
