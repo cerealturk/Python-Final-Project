@@ -35,14 +35,10 @@ class Fireball:
     def __init__(self):
         self.fireballdf = pd.read_csv('fireball_data.csv')
         logging.info("DataFrame created")
-        #logging.info(self.fireballdf.to_string())
 
 
-    #def __repr__(self):
-    #    return "Fireball%s" % str(self)
 
     def __str__(self):
-        #return f"Created Fireball DataFrame with fields: {self.fireballdf.columns.values}"
         return f"Fireball dataset: {self.fireballdf.to_string()}"
 
     def __iter__(self):
