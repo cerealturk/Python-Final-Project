@@ -41,5 +41,5 @@ def fb_alt():
     alt = np.setdiff1d(alt,nan)
     alt = alt.astype(np.float)
     bins = np.arange(np.amin(alt)-0.5, np.amax(alt)+0.5)
-    fb_alt = plt.hist(alt, bins=bins, alpha=0.5, label='x')
+    fb_alt = plt.hist(alt, bins=bins, alpha=0.5, label='Fireballs')
     return fb_alt
