@@ -82,7 +82,7 @@ def load_logging():
 	logger = logging.getLogger()
 	logger.setLevel(logging.DEBUG)
 
-	fh = logging.FileHandler("autompg2.log", 'w')
+	fh = logging.FileHandler("log.log", 'w')
 	fh.setLevel(logging.DEBUG)
 	logger.addHandler(fh)
 
@@ -100,11 +100,11 @@ def main():
 	logging.info("Reading selection...")
 
 	if args.vel:
-		logging.info("initiating X-Ray plot...")
+		logging.info("initiating Velocity plot...")
 		process.printVelocity()
 
 	if args.bright:
-		logging.info("initiating X-Ray plot...")
+		logging.info("initiating Brightness plot...")
 		process.printBrightness()
 		
 	if args.alt:

@@ -22,17 +22,14 @@ def read():
 				sumv += float(val)
 				cnt += 1
 				values = py.append(values, float(val))
-				print("SUM: " + sumv)
 			except:
 				continue
 
 			if (val.isdigit()) == True:
 				sumv += float(val)
 				cnt += 1
-				print("row: ", val)
 
 		avg = py.round(sumv/cnt, 3)
-		print("Avg: ", avg)
 		return values
 
 def pull(data):
@@ -51,7 +48,6 @@ def pull(data):
 	return (vels, objs)
 
 def plot(vels, objs, values):
-	print("Length", len(values))
 	plt.plot(objs, vels, 'r.', markersize=5)
 	plt.plot(values, 'b.', markersize=5)
 

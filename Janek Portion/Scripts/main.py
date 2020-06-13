@@ -72,7 +72,7 @@ def load_logging():
 	logger = logging.getLogger()
 	logger.setLevel(logging.DEBUG)
 
-	fh = logging.FileHandler("autompg2.log", 'w')
+	fh = logging.FileHandler("log.log", 'w')
 	fh.setLevel(logging.DEBUG)
 	logger.addHandler(fh)
 

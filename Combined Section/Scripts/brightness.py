@@ -71,5 +71,4 @@ def plot(types, ptypes):
 	blue_patch = mpatches.Patch(color='blue', label="fireball range")
 	plt.legend(handles=[red_patch, blue_patch])
 
-
 	plt.show()
